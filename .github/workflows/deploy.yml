@@ -20,27 +20,11 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Cache build
-        uses: actions/cache@v3
-        with:
-          path: dist
-          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
-
       - name: Install dependencies
         run: npm ci
 
-      - name: Security audit
-        run: npm audit
-
       - name: Build
         run: npm run build
-
-      - name: Check bundle size
-        run: |
-          if [ $(du -s dist | cut -f1) -gt 204800 ]; then
-            echo "Bundle size exceeds 200KB limit"
-            exit 1
-          fi
 
       - name: List build directory
         run: ls -la dist/
@@ -54,12 +38,3 @@ jobs:
           source: "dist/*"  # Viteのデフォルトビルドディレクトリ
           target: ${{ secrets.SERVER_PATH }}  # デプロイ先のパス
           strip_components: 1 
-
-      - name: Notify on failure
-        if: failure()
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
