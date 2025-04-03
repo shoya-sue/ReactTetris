@@ -23,11 +23,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Security audit
+        run: npm audit
+
       - name: Build
         run: npm run build
 
+      - name: Check bundle size
+        run: |
+          if [ $(du -s out | cut -f1) -gt 204800 ]; then
+            echo "Bundle size exceeds 200KB limit"
+            exit 1
+          fi
+
       - name: List build directory
-        run: ls -la dist/
+        run: ls -la out/
 
       - name: Deploy to Server
         uses: appleboy/scp-action@v0.1.7
@@ -35,6 +45,6 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "dist/*"  # Viteのデフォルトビルドディレクトリ
-          target: ${{ secrets.SERVER_PATH }}  # デプロイ先のパス
+          source: "out/*"
+          target: ${{ secrets.SERVER_PATH }}
           strip_components: 1 
