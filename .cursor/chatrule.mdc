@@ -1,0 +1,36 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: チャットルールの設定ファイル
+globs: 
+  - .cursor/*.mdc
+  - .cursor/rules/*.mdc
+alwaysApply: true
+---
+
+# チャットルール
+
+このファイルは、チャットアシスタントの動作を定義するルールを設定します。
+
+## 設定ファイルの読み込み
+
+以下のMDCファイルから設定を読み込みます：
+
+- [config.mdc](mdc:config.mdc): アシスタントの基本設定
+- [responses.mdc](mdc:responses.mdc): レスポンステンプレート
+- [coding_rules.mdc](mdc:rules/coding_rules.mdc): コーディングルール
+- [error_handling.mdc](mdc:rules/error_handling.mdc): エラーハンドリングルール
+- [security.mdc](mdc:rules/security.mdc): セキュリティルール
+- [performance.mdc](mdc:rules/performance.mdc): パフォーマンスルール
+- [accessibility.mdc](mdc:rules/accessibility.mdc): アクセシビリティルール
+- [snippets.mdc](mdc:rules/snippets.mdc): コードスニペット
+- [git_workflow.mdc](mdc:rules/git_workflow.mdc): Gitワークフロー
+- [development.mdc](mdc:rules/development.mdc): 開発環境設定
+
+## ルールの適用
+
+これらのルールは、チャットアシスタントの応答やコード生成時に自動的に適用されます。
+各ルールファイルは独立して管理され、必要に応じて更新することができます。

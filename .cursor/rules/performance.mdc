@@ -1,0 +1,67 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: パフォーマンスルール設定
+---
+
+# パフォーマンスルール
+
+## コード最適化
+### バンドルサイズ
+- 最大バンドルサイズ: 200KB
+- コード分割: 必須
+- 遅延ロード: 推奨
+
+### レンダリング
+- メモ化の活用
+- 不要な再レンダリングの防止
+- 仮想化の使用
+
+## アセット最適化
+### 画像
+- WebP形式の使用
+- 適切なサイズへの最適化
+- 遅延ロード
+
+### フォント
+- WOFF2形式の使用
+- サブセット化
+- フォントディスプレイ: swap
+
+## キャッシュ戦略
+### ブラウザキャッシュ
+- 静的アセット: 1年
+- APIレスポンス: 5分
+- ページ: 1時間
+
+### サービスワーカー
+- オフライン対応
+- バックグラウンド同期
+- プッシュ通知
+
+## モニタリング
+### メトリクス
+- First Contentful Paint (FCP)
+- Largest Contentful Paint (LCP)
+- First Input Delay (FID)
+- Cumulative Layout Shift (CLS)
+
+### アラート
+- FCP > 1.8秒
+- LCP > 2.5秒
+- FID > 100ms
+- CLS > 0.1
+
+## 最適化ツール
+### ビルド時
+- Terser
+- CSS Minification
+- Tree Shaking
+
+### 実行時
+- Performance API
+- Web Vitals
+- Lighthouse 
