@@ -1,0 +1,65 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main  # メインブランチにプッシュされた時に実行
+  workflow_dispatch:  # 手動実行用のトリガーを追加
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Cache build
+        uses: actions/cache@v3
+        with:
+          path: dist
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Security audit
+        run: npm audit
+
+      - name: Build
+        run: npm run build
+
+      - name: Check bundle size
+        run: |
+          if [ $(du -s dist | cut -f1) -gt 204800 ]; then
+            echo "Bundle size exceeds 200KB limit"
+            exit 1
+          fi
+
+      - name: List build directory
+        run: ls -la dist/
+
+      - name: Deploy to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "dist/*"  # Viteのデフォルトビルドディレクトリ
+          target: ${{ secrets.SERVER_PATH }}  # デプロイ先のパス
+          strip_components: 1 
+
+      - name: Notify on failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
